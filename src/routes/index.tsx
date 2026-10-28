@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import hero from "@/assets/hero.jpg";
+import yaseen from "@/assets/yaseen.webp.asset.json";
+import hasan from "@/assets/hasan.webp.asset.json";
+import najem from "@/assets/najem.webp.asset.json";
 
 const BOOK = "https://www.fresha.com/providers/81611";
 
@@ -10,27 +13,42 @@ const services = [
   { name: "Keratin", items: [["Short Length", 500], ["Medium Length", 750], ["Long Length", 1000]] },
 ] as const;
 
-const locations = ["Princess Tower, Dubai Marina", "The Beach, JBR", "LIV Residence, Dubai Marina"];
+const EMAIL = "info@fadeandshave.ae";
+const ALL = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const SUN_THU = ALL.slice(0, 5);
+const FRI_SAT = ["Friday", "Saturday"];
+type Hours = { label: string; time: string; days: string[]; opens: string }[];
+const weekSplit: Hours = [
+  { label: "Sunday – Thursday", time: "10:00 AM – 12:00 AM", days: SUN_THU, opens: "10:00" },
+  { label: "Friday & Saturday", time: "9:00 AM – 12:00 AM", days: FRI_SAT, opens: "09:00" },
+];
+const locations = [
+  { name: "Princess Tower, Dubai Marina", street: "Shop No.7, Princess Tower", area: "Dubai Marina", phone: "+971 4 564 8515", hours: weekSplit },
+  { name: "The Beach, JBR", street: "Shop 3201A, Meeras", area: "JBR", phone: "+971 4 876 8502", hours: [{ label: "Sunday – Saturday", time: "10:00 AM – 12:00 AM", days: ALL, opens: "10:00" }] as Hours },
+  { name: "LIV Residence, Dubai Marina", street: "Shop 3, LIV Residence", area: "Dubai Marina", phone: "+971 4 580 3784", hours: weekSplit },
+];
 const team = [
-  ["Yaseen", "Manager"],
-  ["Hassan", "Branch Co-ordinator"],
-  ["Najem", "Barber"],
+  { name: "Yaseen", role: "Manager", img: yaseen.url },
+  { name: "Hassan", role: "Branch Co-ordinator", img: hasan.url },
+  { name: "Najem", role: "Barber", img: najem.url },
 ];
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": locations.map((loc) => ({
     "@type": "BarberShop",
-    name: `Fade & Shave Barbers – ${loc}`,
+    name: `Fade & Shave Barbers – ${loc.name}`,
     url: "https://fadeandshave.ae",
+    telephone: loc.phone,
+    email: EMAIL,
     priceRange: "AED 50 – AED 1000",
-    address: { "@type": "PostalAddress", streetAddress: loc, addressLocality: "Dubai", addressCountry: "AE" },
-    openingHoursSpecification: {
+    address: { "@type": "PostalAddress", streetAddress: loc.street, addressLocality: `${loc.area}, Dubai`, addressCountry: "AE" },
+    openingHoursSpecification: loc.hours.map((h) => ({
       "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-      opens: "10:00",
+      dayOfWeek: h.days,
+      opens: h.opens,
       closes: "23:59",
-    },
+    })),
     potentialAction: { "@type": "ReserveAction", target: BOOK },
     makesOffer: services.flatMap((s) =>
       s.items.map(([n, p]) => ({
@@ -50,12 +68,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Boutique gents barbershop in Dubai Marina and JBR. Fades, haircuts, razor shaves, colouring and keratin from AED 50. Open daily 10am–12am. Book online.",
+          "Boutique gents barbershop in Dubai Marina and JBR. Fades, haircuts, razor shaves, colouring and keratin from AED 50. Open daily till midnight. Book online.",
       },
       { property: "og:title", content: "Fade & Shave Barbers | Dubai Marina & JBR" },
       {
         property: "og:description",
-        content: "Handpicked barbers for fades, shaves and grooming. Open daily 10am–12am. Book online.",
+        content: "Handpicked barbers for fades, shaves and grooming. Open daily till midnight. Book online.",
       },
     ],
     links: [{ rel: "canonical", href: "https://fadeandshave.ae/" }],
@@ -89,7 +107,7 @@ function Index() {
           <div className="relative mx-auto w-full max-w-6xl px-5">
             <p className="text-sm uppercase tracking-[0.3em] text-primary">Dubai Marina · JBR</p>
             <h1 className="mt-4 max-w-2xl text-5xl leading-tight md:text-7xl">Boutique barbers for the sharpest fade in Dubai</h1>
-            <p className="mt-5 max-w-lg text-lg text-muted-foreground">Handpicked barbers. Cuts, razor shaves, facials and colouring — open daily 10am to midnight.</p>
+            <p className="mt-5 max-w-lg text-lg text-muted-foreground">Handpicked barbers. Cuts, razor shaves, facials and colouring — open 7 days till midnight.</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a href={BOOK} className="rounded-sm bg-primary px-6 py-3 font-semibold text-primary-foreground hover:opacity-90">Book an appointment</a>
               <a href="#services" className="rounded-sm border border-border px-6 py-3 font-semibold hover:border-primary">See prices</a>
@@ -123,9 +141,21 @@ function Index() {
             <h2 className="text-4xl md:text-5xl">Three shops, one standard</h2>
             <ul className="mt-10 grid gap-6 md:grid-cols-3">
               {locations.map((l) => (
-                <li key={l} className="rounded-sm border p-6">
-                  <h3 className="text-xl">{l}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">Open daily · 10:00 AM – 12:00 AM</p>
+                <li key={l.name} className="rounded-sm border p-6">
+                  <h3 className="text-xl">{l.name}</h3>
+                  <address className="mt-2 text-sm not-italic text-muted-foreground">
+                    {l.street}, {l.area}, Dubai
+                    <br />
+                    <a href={`tel:${l.phone.replace(/\s/g, "")}`} className="text-foreground hover:text-primary">{l.phone}</a>
+                  </address>
+                  <dl className="mt-4 space-y-1 text-sm">
+                    {l.hours.map((h) => (
+                      <div key={h.label} className="flex justify-between gap-3">
+                        <dt className="text-muted-foreground">{h.label}</dt>
+                        <dd>{h.time}</dd>
+                      </div>
+                    ))}
+                  </dl>
                   <a href={BOOK} className="mt-4 inline-block text-sm font-semibold text-primary hover:underline">Book at this shop →</a>
                 </li>
               ))}
@@ -135,11 +165,13 @@ function Index() {
 
         <section id="team" className="mx-auto max-w-6xl px-5 py-24">
           <h2 className="text-4xl md:text-5xl">Meet the barbers</h2>
-          <ul className="mt-10 grid gap-6 sm:grid-cols-3">
-            {team.map(([n, r]) => (
-              <li key={n} className="border-l-2 border-primary pl-5">
-                <h3 className="text-2xl">{n}</h3>
-                <p className="text-sm uppercase tracking-widest text-muted-foreground">{r}</p>
+          <p className="mt-3 text-muted-foreground">Handpicked experts to elevate your experience at Fade &amp; Shave.</p>
+          <ul className="mt-10 grid gap-8 sm:grid-cols-3">
+            {team.map((t) => (
+              <li key={t.name} className="text-center">
+                <img src={t.img} alt={`${t.name}, ${t.role} at Fade & Shave`} width={480} height={480} loading="lazy" className="mx-auto aspect-square w-full max-w-xs object-contain object-bottom grayscale" />
+                <h3 className="mt-4 text-2xl">{t.name}</h3>
+                <p className="text-sm uppercase tracking-widest text-primary">{t.role}</p>
               </li>
             ))}
           </ul>
@@ -154,7 +186,8 @@ function Index() {
       </main>
 
       <footer className="mx-auto max-w-6xl px-5 py-10 text-sm text-muted-foreground">
-        © {new Date().getFullYear()} Fade &amp; Shave Barbers · Dubai Marina &amp; JBR
+        © {new Date().getFullYear()} Fade &amp; Shave Barbers · Dubai Marina &amp; JBR ·{" "}
+        <a href={`mailto:${EMAIL}`} className="hover:text-primary">{EMAIL}</a>
       </footer>
     </div>
   );
