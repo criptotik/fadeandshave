@@ -124,6 +124,8 @@ function Reveal({
 }
 
 function Index() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:p-2 focus:bg-primary focus:text-primary-foreground">
@@ -137,8 +139,44 @@ function Index() {
               <li key={s}><a href={`#${s}`} className="capitalize text-muted-foreground transition-colors duration-300 hover:text-primary">{s}</a></li>
             ))}
           </ul>
-          <a href={BOOK} className="rounded-sm bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90">Book now</a>
+          <a href={BOOK} className="hidden rounded-sm bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90 md:inline-block">Book now</a>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            className="rounded-sm border border-border bg-background/60 p-2 text-foreground backdrop-blur transition-colors duration-300 hover:border-primary md:hidden"
+          >
+            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </nav>
+        {menuOpen && (
+          <div id="mobile-menu" className="menu-panel border-y bg-background/95 backdrop-blur md:hidden">
+            <ul className="mx-auto max-w-6xl space-y-1 px-5 py-4">
+              {[
+                ["Services", "#services"],
+                ["Locations", "#locations"],
+                ["Team", "#team"],
+              ].map(([label, href]) => (
+                <li key={href}>
+                  <a
+                    href={href}
+                    onClick={() => setMenuOpen(false)}
+                    className="block rounded-sm px-3 py-3 font-medium transition-colors duration-300 hover:bg-secondary hover:text-primary"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
+              <li className="pt-2">
+                <a href={BOOK} className="block rounded-sm bg-primary px-3 py-3 text-center font-semibold text-primary-foreground transition-opacity hover:opacity-90">
+                  Book now
+                </a>
+              </li>
+            </ul>
+          </div>
+        )}
       </header>
 
       <main id="main">
