@@ -133,10 +133,10 @@ function Index() {
           <a href="/" className="font-display text-xl text-foreground">Fade &amp; Shave</a>
           <ul className="hidden gap-7 text-sm md:flex">
             {["services", "locations", "team"].map((s) => (
-              <li key={s}><a href={`#${s}`} className="capitalize text-muted-foreground hover:text-primary">{s}</a></li>
+              <li key={s}><a href={`#${s}`} className="capitalize text-muted-foreground transition-colors duration-300 hover:text-primary">{s}</a></li>
             ))}
           </ul>
-          <a href={BOOK} className="rounded-sm bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">Book now</a>
+          <a href={BOOK} className="rounded-sm bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90">Book now</a>
         </nav>
       </header>
 
