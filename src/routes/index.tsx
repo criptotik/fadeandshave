@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { cn } from "@/lib/utils";
 import hero from "@/assets/hero.jpg";
 import yaseen from "@/assets/yaseen.webp.asset.json";
 import hasan from "@/assets/hasan.webp.asset.json";
@@ -82,6 +84,44 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+function Reveal({
+  children,
+  className,
+  delay = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          el.classList.add("reveal-visible");
+          io.disconnect();
+        }
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -40px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={cn("reveal", className)}
+      style={{ "--reveal-delay": `${delay}ms` } as CSSProperties}
+    >
+      {children}
+    </div>
+  );
+}
+
 function Index() {
   return (
     <div className="min-h-screen">
@@ -93,10 +133,10 @@ function Index() {
           <a href="/" className="font-display text-xl text-foreground">Fade &amp; Shave</a>
           <ul className="hidden gap-7 text-sm md:flex">
             {["services", "locations", "team"].map((s) => (
-              <li key={s}><a href={`#${s}`} className="capitalize text-muted-foreground hover:text-primary">{s}</a></li>
+              <li key={s}><a href={`#${s}`} className="capitalize text-muted-foreground transition-colors duration-300 hover:text-primary">{s}</a></li>
             ))}
           </ul>
-          <a href={BOOK} className="rounded-sm bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">Book now</a>
+          <a href={BOOK} className="rounded-sm bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90">Book now</a>
         </nav>
       </header>
 
@@ -105,82 +145,101 @@ function Index() {
           <img src={hero} alt="Barber giving a skin fade at Fade & Shave, Dubai Marina" width={1280} height={800} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover" />
           <div className="hero-overlay absolute inset-0" />
           <div className="relative mx-auto w-full max-w-6xl px-5">
-            <p className="text-sm uppercase tracking-[0.3em] text-primary">Dubai Marina · JBR</p>
-            <h1 className="mt-4 max-w-2xl text-5xl leading-tight md:text-7xl">Boutique barbers for the sharpest fade in Dubai</h1>
-            <p className="mt-5 max-w-lg text-lg text-muted-foreground">Handpicked barbers. Cuts, razor shaves, facials and colouring — open 7 days till midnight.</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a href={BOOK} className="rounded-sm bg-primary px-6 py-3 font-semibold text-primary-foreground hover:opacity-90">Book an appointment</a>
-              <a href="#services" className="rounded-sm border border-border px-6 py-3 font-semibold hover:border-primary">See prices</a>
+            <p className="hero-item text-sm font-medium uppercase tracking-[0.35em] text-primary" style={{ "--hero-delay": "100ms" } as CSSProperties}>Dubai Marina · JBR</p>
+            <h1 className="hero-item mt-5 max-w-2xl text-5xl leading-[1.08] font-semibold md:text-7xl" style={{ "--hero-delay": "250ms" } as CSSProperties}>Boutique barbers for the sharpest fade in Dubai</h1>
+            <p className="hero-item mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground" style={{ "--hero-delay": "400ms" } as CSSProperties}>Handpicked barbers. Cuts, razor shaves, facials and colouring — open 7 days till midnight.</p>
+            <div className="hero-item mt-9 flex flex-wrap gap-3" style={{ "--hero-delay": "550ms" } as CSSProperties}>
+              <a href={BOOK} className="rounded-sm bg-primary px-6 py-3 font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90">Book an appointment</a>
+              <a href="#services" className="rounded-sm border border-border px-6 py-3 font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:border-primary">See prices</a>
             </div>
           </div>
         </section>
 
-        <section id="services" className="mx-auto max-w-6xl px-5 py-24">
-          <h2 className="text-4xl md:text-5xl">Services &amp; prices</h2>
-          <p className="mt-3 max-w-xl text-muted-foreground">Every service tailored to your hair, skin type and style.</p>
-          <div className="mt-12 grid gap-px overflow-hidden rounded-sm border bg-border md:grid-cols-2">
-            {services.map((s) => (
-              <article key={s.name} className="bg-card p-8">
-                <h3 className="text-2xl text-primary">{s.name}</h3>
-                <dl className="mt-5 space-y-3">
-                  {s.items.map(([n, p]) => (
-                    <div key={n} className="flex items-baseline gap-3">
-                      <dt>{n}</dt>
-                      <span aria-hidden className="flex-1 border-b border-dotted" />
-                      <dd className="font-semibold">AED {p}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </article>
+        <section id="services" className="mx-auto max-w-6xl scroll-mt-8 px-5 py-28">
+          <Reveal>
+            <p className="text-sm font-medium uppercase tracking-[0.35em] text-primary">What we do</p>
+            <h2 className="mt-4 text-4xl font-semibold md:text-5xl">Services &amp; prices</h2>
+            <p className="mt-4 max-w-xl leading-relaxed text-muted-foreground">Every service tailored to your hair, skin type and style.</p>
+          </Reveal>
+          <div className="mt-14 grid gap-px overflow-hidden rounded-sm border bg-border md:grid-cols-2">
+            {services.map((s, i) => (
+              <Reveal key={s.name} delay={i * 90} className="bg-card">
+                <article className="h-full p-8 transition-colors duration-300 hover:bg-secondary/40">
+                  <h3 className="text-2xl text-primary">{s.name}</h3>
+                  <dl className="mt-5 space-y-3">
+                    {s.items.map(([n, p]) => (
+                      <div key={n} className="flex items-baseline gap-3">
+                        <dt>{n}</dt>
+                        <span aria-hidden className="flex-1 border-b border-dotted" />
+                        <dd className="font-semibold tabular-nums">AED {p}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </article>
+              </Reveal>
             ))}
           </div>
         </section>
 
-        <section id="locations" className="border-y bg-card">
-          <div className="mx-auto max-w-6xl px-5 py-24">
-            <h2 className="text-4xl md:text-5xl">Three shops, one standard</h2>
-            <ul className="mt-10 grid gap-6 md:grid-cols-3">
-              {locations.map((l) => (
-                <li key={l.name} className="rounded-sm border p-6">
-                  <h3 className="text-xl">{l.name}</h3>
-                  <address className="mt-2 text-sm not-italic text-muted-foreground">
-                    {l.street}, {l.area}, Dubai
-                    <br />
-                    <a href={`tel:${l.phone.replace(/\s/g, "")}`} className="text-foreground hover:text-primary">{l.phone}</a>
-                  </address>
-                  <dl className="mt-4 space-y-1 text-sm">
-                    {l.hours.map((h) => (
-                      <div key={h.label} className="flex justify-between gap-3">
-                        <dt className="text-muted-foreground">{h.label}</dt>
-                        <dd>{h.time}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                  <a href={BOOK} className="mt-4 inline-block text-sm font-semibold text-primary hover:underline">Book at this shop →</a>
-                </li>
+        <section id="locations" className="scroll-mt-8 border-y bg-card">
+          <div className="mx-auto max-w-6xl px-5 py-28">
+            <Reveal>
+              <p className="text-sm font-medium uppercase tracking-[0.35em] text-primary">Find us</p>
+              <h2 className="mt-4 text-4xl font-semibold md:text-5xl">Three shops, one standard</h2>
+            </Reveal>
+            <ul className="mt-12 grid gap-6 md:grid-cols-3">
+              {locations.map((l, i) => (
+                <Reveal key={l.name} delay={i * 110}>
+                  <li className="h-full rounded-sm border bg-background p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/60">
+                    <h3 className="text-xl">{l.name}</h3>
+                    <address className="mt-2 text-sm leading-relaxed not-italic text-muted-foreground">
+                      {l.street}, {l.area}, Dubai
+                      <br />
+                      <a href={`tel:${l.phone.replace(/\s/g, "")}`} className="text-foreground transition-colors hover:text-primary">{l.phone}</a>
+                    </address>
+                    <dl className="mt-4 space-y-1 text-sm">
+                      {l.hours.map((h) => (
+                        <div key={h.label} className="flex justify-between gap-3">
+                          <dt className="text-muted-foreground">{h.label}</dt>
+                          <dd>{h.time}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                    <a href={BOOK} className="mt-4 inline-block text-sm font-semibold text-primary transition-transform duration-300 hover:translate-x-1">Book at this shop →</a>
+                  </li>
+                </Reveal>
               ))}
             </ul>
           </div>
         </section>
 
-        <section id="team" className="mx-auto max-w-6xl px-5 py-24">
-          <h2 className="text-4xl md:text-5xl">Meet the barbers</h2>
-          <p className="mt-3 text-muted-foreground">Handpicked experts to elevate your experience at Fade &amp; Shave.</p>
-          <ul className="mt-10 grid gap-8 sm:grid-cols-3">
-            {team.map((t) => (
-              <li key={t.name} className="text-center">
-                <img src={t.img} alt={`${t.name}, ${t.role} at Fade & Shave`} width={480} height={480} loading="lazy" className="mx-auto aspect-square w-full max-w-xs object-contain object-bottom grayscale" />
-                <h3 className="mt-4 text-2xl">{t.name}</h3>
-                <p className="text-sm uppercase tracking-widest text-primary">{t.role}</p>
-              </li>
+        <section id="team" className="mx-auto max-w-6xl scroll-mt-8 px-5 py-28">
+          <Reveal>
+            <p className="text-sm font-medium uppercase tracking-[0.35em] text-primary">The crew</p>
+            <h2 className="mt-4 text-4xl font-semibold md:text-5xl">Meet the barbers</h2>
+            <p className="mt-4 leading-relaxed text-muted-foreground">Handpicked experts to elevate your experience at Fade &amp; Shave.</p>
+          </Reveal>
+          <ul className="mt-12 grid gap-8 sm:grid-cols-3">
+            {team.map((t, i) => (
+              <Reveal key={t.name} delay={i * 110}>
+                <li className="group text-center">
+                  <img src={t.img} alt={`${t.name}, ${t.role} at Fade & Shave`} width={480} height={480} loading="lazy" className="mx-auto aspect-square w-full max-w-xs object-contain object-bottom grayscale transition-all duration-500 group-hover:scale-[1.03] group-hover:grayscale-0" />
+                  <h3 className="mt-4 text-2xl">{t.name}</h3>
+                  <p className="mt-1 text-sm uppercase tracking-widest text-primary">{t.role}</p>
+                </li>
+              </Reveal>
             ))}
           </ul>
         </section>
 
         <section className="bg-primary text-primary-foreground">
-          <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-5 py-16 md:flex-row md:items-center">
-            <h2 className="text-3xl md:text-4xl">Ready for a fresh cut?</h2>
-            <a href={BOOK} className="rounded-sm bg-background px-6 py-3 font-semibold text-foreground hover:opacity-90">Book on Fresha</a>
+          <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-5 py-20 md:flex-row md:items-center">
+            <Reveal>
+              <h2 className="text-3xl font-semibold md:text-4xl">Ready for a fresh cut?</h2>
+            </Reveal>
+            <Reveal delay={150}>
+              <a href={BOOK} className="inline-block rounded-sm bg-background px-6 py-3 font-semibold text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90">Book on Fresha</a>
+            </Reveal>
           </div>
         </section>
       </main>
