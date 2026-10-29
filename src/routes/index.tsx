@@ -145,33 +145,38 @@ function Index() {
           <img src={hero} alt="Barber giving a skin fade at Fade & Shave, Dubai Marina" width={1280} height={800} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover" />
           <div className="hero-overlay absolute inset-0" />
           <div className="relative mx-auto w-full max-w-6xl px-5">
-            <p className="text-sm uppercase tracking-[0.3em] text-primary">Dubai Marina · JBR</p>
-            <h1 className="mt-4 max-w-2xl text-5xl leading-tight md:text-7xl">Boutique barbers for the sharpest fade in Dubai</h1>
-            <p className="mt-5 max-w-lg text-lg text-muted-foreground">Handpicked barbers. Cuts, razor shaves, facials and colouring — open 7 days till midnight.</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a href={BOOK} className="rounded-sm bg-primary px-6 py-3 font-semibold text-primary-foreground hover:opacity-90">Book an appointment</a>
-              <a href="#services" className="rounded-sm border border-border px-6 py-3 font-semibold hover:border-primary">See prices</a>
+            <p className="hero-item text-sm font-medium uppercase tracking-[0.35em] text-primary" style={{ "--hero-delay": "100ms" } as CSSProperties}>Dubai Marina · JBR</p>
+            <h1 className="hero-item mt-5 max-w-2xl text-5xl leading-[1.08] font-semibold md:text-7xl" style={{ "--hero-delay": "250ms" } as CSSProperties}>Boutique barbers for the sharpest fade in Dubai</h1>
+            <p className="hero-item mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground" style={{ "--hero-delay": "400ms" } as CSSProperties}>Handpicked barbers. Cuts, razor shaves, facials and colouring — open 7 days till midnight.</p>
+            <div className="hero-item mt-9 flex flex-wrap gap-3" style={{ "--hero-delay": "550ms" } as CSSProperties}>
+              <a href={BOOK} className="rounded-sm bg-primary px-6 py-3 font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90">Book an appointment</a>
+              <a href="#services" className="rounded-sm border border-border px-6 py-3 font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:border-primary">See prices</a>
             </div>
           </div>
         </section>
 
-        <section id="services" className="mx-auto max-w-6xl px-5 py-24">
-          <h2 className="text-4xl md:text-5xl">Services &amp; prices</h2>
-          <p className="mt-3 max-w-xl text-muted-foreground">Every service tailored to your hair, skin type and style.</p>
-          <div className="mt-12 grid gap-px overflow-hidden rounded-sm border bg-border md:grid-cols-2">
-            {services.map((s) => (
-              <article key={s.name} className="bg-card p-8">
-                <h3 className="text-2xl text-primary">{s.name}</h3>
-                <dl className="mt-5 space-y-3">
-                  {s.items.map(([n, p]) => (
-                    <div key={n} className="flex items-baseline gap-3">
-                      <dt>{n}</dt>
-                      <span aria-hidden className="flex-1 border-b border-dotted" />
-                      <dd className="font-semibold">AED {p}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </article>
+        <section id="services" className="mx-auto max-w-6xl scroll-mt-8 px-5 py-28">
+          <Reveal>
+            <p className="text-sm font-medium uppercase tracking-[0.35em] text-primary">What we do</p>
+            <h2 className="mt-4 text-4xl font-semibold md:text-5xl">Services &amp; prices</h2>
+            <p className="mt-4 max-w-xl leading-relaxed text-muted-foreground">Every service tailored to your hair, skin type and style.</p>
+          </Reveal>
+          <div className="mt-14 grid gap-px overflow-hidden rounded-sm border bg-border md:grid-cols-2">
+            {services.map((s, i) => (
+              <Reveal key={s.name} delay={i * 90} className="bg-card">
+                <article className="h-full p-8 transition-colors duration-300 hover:bg-secondary/40">
+                  <h3 className="text-2xl text-primary">{s.name}</h3>
+                  <dl className="mt-5 space-y-3">
+                    {s.items.map(([n, p]) => (
+                      <div key={n} className="flex items-baseline gap-3">
+                        <dt>{n}</dt>
+                        <span aria-hidden className="flex-1 border-b border-dotted" />
+                        <dd className="font-semibold tabular-nums">AED {p}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </article>
+              </Reveal>
             ))}
           </div>
         </section>
