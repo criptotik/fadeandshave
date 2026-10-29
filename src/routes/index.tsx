@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import hero from "@/assets/hero.jpg";
 import yaseen from "@/assets/yaseen.webp.asset.json";
