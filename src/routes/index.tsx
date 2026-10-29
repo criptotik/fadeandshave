@@ -181,51 +181,65 @@ function Index() {
           </div>
         </section>
 
-        <section id="locations" className="border-y bg-card">
-          <div className="mx-auto max-w-6xl px-5 py-24">
-            <h2 className="text-4xl md:text-5xl">Three shops, one standard</h2>
-            <ul className="mt-10 grid gap-6 md:grid-cols-3">
-              {locations.map((l) => (
-                <li key={l.name} className="rounded-sm border p-6">
-                  <h3 className="text-xl">{l.name}</h3>
-                  <address className="mt-2 text-sm not-italic text-muted-foreground">
-                    {l.street}, {l.area}, Dubai
-                    <br />
-                    <a href={`tel:${l.phone.replace(/\s/g, "")}`} className="text-foreground hover:text-primary">{l.phone}</a>
-                  </address>
-                  <dl className="mt-4 space-y-1 text-sm">
-                    {l.hours.map((h) => (
-                      <div key={h.label} className="flex justify-between gap-3">
-                        <dt className="text-muted-foreground">{h.label}</dt>
-                        <dd>{h.time}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                  <a href={BOOK} className="mt-4 inline-block text-sm font-semibold text-primary hover:underline">Book at this shop →</a>
-                </li>
+        <section id="locations" className="scroll-mt-8 border-y bg-card">
+          <div className="mx-auto max-w-6xl px-5 py-28">
+            <Reveal>
+              <p className="text-sm font-medium uppercase tracking-[0.35em] text-primary">Find us</p>
+              <h2 className="mt-4 text-4xl font-semibold md:text-5xl">Three shops, one standard</h2>
+            </Reveal>
+            <ul className="mt-12 grid gap-6 md:grid-cols-3">
+              {locations.map((l, i) => (
+                <Reveal key={l.name} delay={i * 110}>
+                  <li className="h-full rounded-sm border bg-background p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/60">
+                    <h3 className="text-xl">{l.name}</h3>
+                    <address className="mt-2 text-sm leading-relaxed not-italic text-muted-foreground">
+                      {l.street}, {l.area}, Dubai
+                      <br />
+                      <a href={`tel:${l.phone.replace(/\s/g, "")}`} className="text-foreground transition-colors hover:text-primary">{l.phone}</a>
+                    </address>
+                    <dl className="mt-4 space-y-1 text-sm">
+                      {l.hours.map((h) => (
+                        <div key={h.label} className="flex justify-between gap-3">
+                          <dt className="text-muted-foreground">{h.label}</dt>
+                          <dd>{h.time}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                    <a href={BOOK} className="mt-4 inline-block text-sm font-semibold text-primary transition-transform duration-300 hover:translate-x-1">Book at this shop →</a>
+                  </li>
+                </Reveal>
               ))}
             </ul>
           </div>
         </section>
 
-        <section id="team" className="mx-auto max-w-6xl px-5 py-24">
-          <h2 className="text-4xl md:text-5xl">Meet the barbers</h2>
-          <p className="mt-3 text-muted-foreground">Handpicked experts to elevate your experience at Fade &amp; Shave.</p>
-          <ul className="mt-10 grid gap-8 sm:grid-cols-3">
-            {team.map((t) => (
-              <li key={t.name} className="text-center">
-                <img src={t.img} alt={`${t.name}, ${t.role} at Fade & Shave`} width={480} height={480} loading="lazy" className="mx-auto aspect-square w-full max-w-xs object-contain object-bottom grayscale" />
-                <h3 className="mt-4 text-2xl">{t.name}</h3>
-                <p className="text-sm uppercase tracking-widest text-primary">{t.role}</p>
-              </li>
+        <section id="team" className="mx-auto max-w-6xl scroll-mt-8 px-5 py-28">
+          <Reveal>
+            <p className="text-sm font-medium uppercase tracking-[0.35em] text-primary">The crew</p>
+            <h2 className="mt-4 text-4xl font-semibold md:text-5xl">Meet the barbers</h2>
+            <p className="mt-4 leading-relaxed text-muted-foreground">Handpicked experts to elevate your experience at Fade &amp; Shave.</p>
+          </Reveal>
+          <ul className="mt-12 grid gap-8 sm:grid-cols-3">
+            {team.map((t, i) => (
+              <Reveal key={t.name} delay={i * 110}>
+                <li className="group text-center">
+                  <img src={t.img} alt={`${t.name}, ${t.role} at Fade & Shave`} width={480} height={480} loading="lazy" className="mx-auto aspect-square w-full max-w-xs object-contain object-bottom grayscale transition-all duration-500 group-hover:scale-[1.03] group-hover:grayscale-0" />
+                  <h3 className="mt-4 text-2xl">{t.name}</h3>
+                  <p className="mt-1 text-sm uppercase tracking-widest text-primary">{t.role}</p>
+                </li>
+              </Reveal>
             ))}
           </ul>
         </section>
 
         <section className="bg-primary text-primary-foreground">
-          <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-5 py-16 md:flex-row md:items-center">
-            <h2 className="text-3xl md:text-4xl">Ready for a fresh cut?</h2>
-            <a href={BOOK} className="rounded-sm bg-background px-6 py-3 font-semibold text-foreground hover:opacity-90">Book on Fresha</a>
+          <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-5 py-20 md:flex-row md:items-center">
+            <Reveal>
+              <h2 className="text-3xl font-semibold md:text-4xl">Ready for a fresh cut?</h2>
+            </Reveal>
+            <Reveal delay={150}>
+              <a href={BOOK} className="inline-block rounded-sm bg-background px-6 py-3 font-semibold text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90">Book on Fresha</a>
+            </Reveal>
           </div>
         </section>
       </main>
